@@ -59,5 +59,5 @@ resource "aws_lambda_permission" "api_gateway" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.root_route.function_name
 
-  source_arn = "${aws_apigatewayv2_api.this.execution_arn}/*"
+  source_arn = "${aws_apigatewayv2_api.this.execution_arn}/*/GET/"
 }
