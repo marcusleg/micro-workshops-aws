@@ -2,7 +2,9 @@
 
 ## How to use
 1. [Install and configure AWS CLI](../How%20to%20setup%20AWS%20CLI.md)
-2. [Install AWS CDK](../How%20to%20install%20AWS%20CDK.md) 
+2. [Install AWS CDK](../How%20to%20install%20AWS%20CDK.md)
+3. Select the AWS profile of your company provided AWS account (e.g. `export AWS_PROFILE=my-company-sandbox-account`)
+3. `npx cdk deploy`
 
 ## Useful commands
 
