@@ -26,6 +26,7 @@ export class CloudfrontS3LambdaStarterTemplateStack extends cdk.Stack {
       this,
       "ApiRouteHandler",
       {
+        functionName: `${workshopPrefix}-api-route-handler`,
         entry: "lambda-functions/dynamic-api-route.ts",
         handler: "handler",
         runtime: aws_lambda.Runtime.NODEJS_20_X,

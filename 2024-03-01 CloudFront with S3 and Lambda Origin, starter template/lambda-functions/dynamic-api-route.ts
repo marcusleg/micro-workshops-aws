@@ -1,9 +1,18 @@
-export const handler = async () => {
+import { LambdaFunctionURLEvent } from 'aws-lambda';
+
+export const handler = async (event: LambdaFunctionURLEvent) => {
   return {
     statusCode: 200,
     headers: {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/json'
     },
-    body: 'Hello from Lambda',
+    body: JSON.stringify({
+      message: 'Hello from Lambda',
+      request: {
+        headers: event.headers,
+        path: event.rawPath,
+        queryStringParameters: event.queryStringParameters
+      }
+    }),
   };
 };
