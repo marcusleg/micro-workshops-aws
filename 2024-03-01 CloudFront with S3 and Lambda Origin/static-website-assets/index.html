@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Website Asset</title>
+</head>
+<body>
+<!-- First div for the static message -->
+<div id="static-message">Hello from the static asset S3 bucket</div>
+
+<!-- Second div for displaying fetch result -->
+<div id="fetch-result">Loading...</div>
+
+<script>
+    // Vanilla JavaScript code to perform a fetch request to "/api/hello"
+    fetch('/api/hello')
+        .then(response => {
+            // Check if the request was successful
+            if (response.ok) {
+                return response.text(); // Assuming the response is plain text
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => JSON.parse(data))
+        .then(data => {
+            // Display the data in the second div
+            document.getElementById('fetch-result').textContent = data.message;
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch
+            console.error('There was a problem with the fetch operation:', error);
+            document.getElementById('fetch-result').textContent = 'Failed to load data.';
+        });
+</script>
+</body>
+</html>
