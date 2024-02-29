@@ -23,6 +23,7 @@ resource "aws_s3_object" "static_website_assets" {
   key    = "/index.html"
 
   source       = "static-website-assets/index.html"
+  cache_control = "max-age=86400; stale-if-error"
   content_type = "text/html; charset=utf-8"
 
   force_destroy = true
