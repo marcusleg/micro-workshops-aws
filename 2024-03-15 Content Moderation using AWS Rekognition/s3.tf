@@ -6,6 +6,8 @@ resource "random_string" "s3_bucket_profile_pictures_prefix" {
 
 resource "aws_s3_bucket" "profile_pictures" {
   bucket = "${local.workshop_prefix}-profile-pictures${random_string.s3_bucket_profile_pictures_prefix.result}"
+
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_notification" "profile_pictures_content_moderation" {
