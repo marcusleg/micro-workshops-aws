@@ -1,6 +1,6 @@
 locals {
   function_name_content_moderator = "${local.workshop_prefix}-content-moderator"
-  function_name_image_labeler = "${local.workshop_prefix}-image-labeler"
+  function_name_image_labeler     = "${local.workshop_prefix}-image-labeler"
 }
 
 // content moderator Lambda
@@ -21,7 +21,7 @@ resource "aws_iam_role" "content_moderator" {
   })
 
   inline_policy {
-    name = "content_moderator_lambda_policy"
+    name   = "content_moderator_lambda_policy"
     policy = data.aws_iam_policy_document.content_moderator_lambda_policy.json
   }
 }
@@ -70,12 +70,12 @@ data "archive_file" "lambda_content_moderator" {
 resource "aws_lambda_function" "content_moderator" {
   function_name = local.function_name_content_moderator
 
-  filename = data.archive_file.lambda_content_moderator.output_path
+  filename         = data.archive_file.lambda_content_moderator.output_path
   source_code_hash = data.archive_file.lambda_content_moderator.output_base64sha256
 
-  handler  = "index.handler"
-  runtime  = "nodejs20.x"
-  role     = aws_iam_role.content_moderator.arn
+  handler = "index.handler"
+  runtime = "nodejs20.x"
+  role    = aws_iam_role.content_moderator.arn
 }
 
 resource "aws_lambda_permission" "content_moderator_allow_profile_pictures_bucket" {
@@ -105,7 +105,7 @@ resource "aws_iam_role" "image_labeler" {
   })
 
   inline_policy {
-    name = "image_labeler_lambda_policy"
+    name   = "image_labeler_lambda_policy"
     policy = data.aws_iam_policy_document.image_labeler_lambda_policy.json
   }
 }
@@ -154,12 +154,12 @@ data "archive_file" "lambda_image_labeler" {
 resource "aws_lambda_function" "image_labeler" {
   function_name = local.function_name_image_labeler
 
-  filename = data.archive_file.lambda_image_labeler.output_path
+  filename         = data.archive_file.lambda_image_labeler.output_path
   source_code_hash = data.archive_file.lambda_image_labeler.output_base64sha256
 
-  handler  = "index.handler"
-  runtime  = "nodejs20.x"
-  role     = aws_iam_role.image_labeler.arn
+  handler = "index.handler"
+  runtime = "nodejs20.x"
+  role    = aws_iam_role.image_labeler.arn
 }
 
 resource "aws_lambda_permission" "image_labeler_allow_profile_pictures_bucket" {
