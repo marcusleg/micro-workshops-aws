@@ -12,7 +12,10 @@ resource "aws_iam_role" "sign_up_state_machine" {
 
 data "aws_iam_policy_document" "sign_up_state_machine" {
   statement {
-    actions = ["dynamodb:PutItem"]
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+    ]
 
     resources = [aws_dynamodb_table.users.arn]
   }
@@ -37,8 +40,38 @@ resource "aws_sfn_state_machine" "user_sign_up" {
 
   definition = <<EOF
 {
-  "StartAt": "Store user in DynamoDB",
+  "StartAt": "Query DynamoDB for username",
   "States": {
+      "Query DynamoDB for username": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${aws_dynamodb_table.users.name}",
+        "Key": {
+          "Username": {
+            "S.$": "$.username"
+          }
+        }
+      },
+      "ResultPath": "$.DynamoDBResponse",
+      "Next": "If username already exists"
+    },
+    "If username already exists": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.DynamoDBResponse.Item",
+          "IsPresent": true,
+          "Next": "Username already exists"
+        }
+      ],
+      "Default": "Store user in DynamoDB"
+    },
+    "Username already exists": {
+      "Type": "Fail",
+      "Error": "UserExistsError",
+      "Cause": "A user with the given username already exists."
+    },
     "Store user in DynamoDB": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:putItem",
@@ -47,6 +80,9 @@ resource "aws_sfn_state_machine" "user_sign_up" {
         "Item": {
           "Username": {
             "S.$": "$.username"
+          },
+          "Password": {
+            "S.$": "$.password"
           }
         }
       },
