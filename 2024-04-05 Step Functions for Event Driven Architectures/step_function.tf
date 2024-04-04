@@ -76,7 +76,7 @@ resource "aws_sfn_state_machine" "user_sign_up" {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:putItem",
       "Parameters": {
-        "TableName": "2024-04-05-workshop-users",
+        "TableName": "${aws_dynamodb_table.users.name}",
         "Item": {
           "Username": {
             "S.$": "$.username"
@@ -86,14 +86,15 @@ resource "aws_sfn_state_machine" "user_sign_up" {
           }
         }
       },
-      "Next": "HelloWorld"
+      "Next": "Sign up complete"
     },
-    "HelloWorld": {
+    "Sign up complete": {
       "Type": "Pass",
-      "Result": "Hello World!",
+      "Result": "Sign up successful!",
       "End": true
     }
   }
 }
+
 EOF
 }
