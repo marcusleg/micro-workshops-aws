@@ -1,9 +1,3 @@
-resource "aws_iam_role_policy" "api_invoke_policy" {
-  name   = "APIInvokeStepFunction"
-  role   = aws_iam_role.sign_up_state_machine.id
-  policy = data.aws_iam_policy_document.step_function_integration.json
-}
-
 resource "aws_apigatewayv2_api" "this" {
   name          = "${local.workshop_prefix}-api"
   protocol_type = "HTTP"
