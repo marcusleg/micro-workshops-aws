@@ -25,6 +25,12 @@ data "aws_iam_policy_document" "sign_up_state_machine" {
 
     resources = [aws_sns_topic.user_events.arn]
   }
+
+  statement {
+    actions = ["lambda:InvokeFunction"]
+
+    resources = [aws_lambda_function.password_strength_validator.arn]
+  }
 }
 
 data "aws_iam_policy_document" "sign_up_state_machine_execution" {
@@ -46,13 +52,52 @@ resource "aws_sfn_state_machine" "user_sign_up" {
 
   definition = <<EOF
 {
-  "StartAt": "Query DynamoDB for username",
+  "StartAt": "Verify password strength",
   "States": {
+    "Verify password strength": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "${aws_lambda_function.password_strength_validator.arn}"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "ResultPath": "$.PasswordValidation",
+      "Next": "If password is strong"
+    },
+    "If password is strong": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.PasswordValidation.Payload.passwordValid",
+          "BooleanEquals": false,
+          "Next": "Weak password"
+        }
+      ],
+      "Default": "Query DynamoDB for username"
+    },
+    "Weak password": {
+      "Type": "Fail",
+      "Error": "WeakPasswordError",
+      "Cause": "The password does not match out security requirements."
+    },
     "Query DynamoDB for username": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:getItem",
       "Parameters": {
-        "TableName": "${aws_dynamodb_table.users.name}",
+        "TableName": "2024-04-05-workshop-users",
         "Key": {
           "Username": {
             "S.$": "$.username"
@@ -84,7 +129,7 @@ resource "aws_sfn_state_machine" "user_sign_up" {
               "Type": "Task",
               "Resource": "arn:aws:states:::dynamodb:putItem",
               "Parameters": {
-                "TableName": "${aws_dynamodb_table.users.name}",
+                "TableName": "2024-04-05-workshop-users",
                 "Item": {
                   "Username": {
                     "S.$": "$.username"
@@ -109,7 +154,7 @@ resource "aws_sfn_state_machine" "user_sign_up" {
                   "eventType": "signup",
                   "username.$": "$.username"
                 },
-                "TopicArn": "${aws_sns_topic.user_events.arn}"
+                "TopicArn": "arn:aws:sns:eu-central-1:724792572405:2024-04-05-workshop-user-events"
               },
               "End": true
             }
