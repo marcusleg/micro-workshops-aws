@@ -7,7 +7,7 @@ resource "aws_ecs_cluster" "fargate" {
   }
 }
 
-resource "aws_ecs_cluster_capacity_providers" "example" {
+resource "aws_ecs_cluster_capacity_providers" "fargate" {
   cluster_name = aws_ecs_cluster.fargate.name
 
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
