@@ -36,7 +36,7 @@ export class CdkStack extends cdk.Stack {
 
     // Nextcloud
     const nextcloudRds = new rds.DatabaseInstance(this, 'NextcloudRds', {
-      // databaseName: 'nextcloud',
+      databaseName: 'nextcloud',
       engine: rds.DatabaseInstanceEngine.postgres({version: rds.PostgresEngineVersion.VER_16_1}),
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.SMALL),
       vpc: vpc,
@@ -44,7 +44,7 @@ export class CdkStack extends cdk.Stack {
     })
 
     const nextcloudEfsFilesystem = new efs.FileSystem(this, 'NextcloudFileSystem', {
-      // fileSystemName: "nextcloud",
+      fileSystemName: "nextcloud",
       vpc,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
@@ -70,6 +70,19 @@ export class CdkStack extends cdk.Stack {
         taskRole: nextcloudTaskRole,
       },
     })
+
+    const nextcloudScalableTarget = nextcloudEcsPattern.service.autoScaleTaskCount({
+      minCapacity: 3,
+      maxCapacity: 12,
+    });
+
+    nextcloudScalableTarget.scaleOnCpuUtilization('NextcloudCpuScaling', {
+      targetUtilizationPercent: 70,
+    });
+
+    nextcloudScalableTarget.scaleOnMemoryUtilization('NextcloudMemoryScaling', {
+      targetUtilizationPercent: 70,
+    });
 
     nextcloudEcsPattern.service.taskDefinition.addVolume({
       name: 'data',
