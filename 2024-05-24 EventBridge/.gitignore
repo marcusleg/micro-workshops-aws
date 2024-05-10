@@ -1,3 +1,5 @@
+*.zip
+
 ### Terraform template
 # Local .terraform directories
 **/.terraform/*

@@ -1,3 +1,3 @@
-output "car_telemetry_ingest_api_endpoint" {
-  value = "${aws_apigatewayv2_api.car_telemetry_ingest.api_endpoint}/ingest"
+output "ingest_lambda_function_url" {
+  value = aws_lambda_function_url.car_telemtry_ingest.function_url
 }
