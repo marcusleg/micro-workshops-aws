@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "car_telemetry_ingest_lambda_policy" {
       "events:PutEvents",
     ]
 
-    resources = [aws_cloudwatch_event_bus.car_analytics.arn]
+    resources = [aws_cloudwatch_event_bus.web_shop.arn]
   }
 }
 
@@ -61,13 +61,13 @@ resource "aws_lambda_function" "car_telemetry_ingest" {
 
   environment {
     variables = {
-      CAR_ANALYTICS_EVENT_BUS_NAME = aws_cloudwatch_event_bus.car_analytics.name
+      CAR_ANALYTICS_EVENT_BUS_NAME = aws_cloudwatch_event_bus.web_shop.name
     }
   }
 }
 
 # Function URL
-resource "aws_lambda_function_url" "car_telemtry_ingest" {
+resource "aws_lambda_function_url" "car_telemetry_ingest" {
   function_name      = aws_lambda_function.car_telemetry_ingest.function_name
   authorization_type = "NONE"
 }

@@ -1,3 +1,3 @@
-resource "aws_cloudwatch_event_bus" "car_analytics" {
-  name = "${local.workshop_prefix}-car-analytics"
+resource "aws_cloudwatch_event_bus" "web_shop" {
+  name = "${local.workshop_prefix}-web-shop"
 }
