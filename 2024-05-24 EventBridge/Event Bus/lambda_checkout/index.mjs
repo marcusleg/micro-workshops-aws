@@ -6,8 +6,8 @@ export const handler = async (event) => {
     const params = {
         Entries: [
             {
-                EventBusName: process.env.CAR_ANALYTICS_EVENT_BUS_NAME,
-                Source: 'com.example.telemtry',
+                EventBusName: process.env.EVENT_BUS_NAME,
+                Source: 'com.example.shop',
                 DetailType: 'CustomEvent',
                 Detail: event.body
             }
@@ -20,13 +20,13 @@ export const handler = async (event) => {
         console.log('Event sent successfully:', result);
         return {
             statusCode: 200,
-            body: JSON.stringify('Telemetry ingested successfully.')
+            body: JSON.stringify('Checkout successful.')
         };
     } catch (error) {
         console.error('Error sending event:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify('Error ingesting telemetry.')
+            body: JSON.stringify('Error checkout failed.')
         };
     }
 };
