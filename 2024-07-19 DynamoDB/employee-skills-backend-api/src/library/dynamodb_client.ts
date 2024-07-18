@@ -60,6 +60,24 @@ const listEmployees = async () => {
   return response.Items;
 };
 
+const listEmployeesByAvailableFrom = async (availableFrom: string) => {
+  // TODO
+  return [];
+};
+
+const listEmployeesBySkill = async (skill: string) => {
+  // TODO
+  return [];
+};
+
+const listEmployeesBySkillAndAvailableFrom = async (
+  skill: string,
+  availableFrom: string,
+) => {
+  // TODO
+  return [];
+};
+
 const putEmployee = async (name: string) => {
   const employeeId = ulid();
   const command = new PutCommand({
@@ -81,6 +99,9 @@ const employeeSkillsTable = {
   deleteSkillFromEmployee,
   getEmployeeById,
   listEmployees,
+  listEmployeesByAvailableFrom,
+  listEmployeesBySkill,
+  listEmployeesBySkillAndAvailableFrom,
   putEmployee,
 };
 

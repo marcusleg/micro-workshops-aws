@@ -7,6 +7,36 @@ const employee: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   });
 
   fastify.get<{
+    Querystring: {
+      availableFrom?: string;
+      skill?: string;
+    };
+  }>("/search", async function (request, reply) {
+    const { availableFrom, skill } = request.query;
+
+    if (!availableFrom && !skill) {
+      throw new Error(
+        "Either 'availableFrom' or 'skill' query parameter is required",
+      );
+    }
+
+    if (availableFrom && skill) {
+      return await employeeSkillsTable.listEmployeesBySkillAndAvailableFrom(
+        skill,
+        availableFrom,
+      );
+    }
+
+    if (availableFrom) {
+      return await employeeSkillsTable.listEmployeesByAvailableFrom(
+        availableFrom,
+      );
+    }
+
+    return await employeeSkillsTable.listEmployeesBySkill(skill);
+  });
+
+  fastify.get<{
     Params: {
       employeeId: string;
     };
