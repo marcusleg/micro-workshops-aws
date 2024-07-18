@@ -20,11 +20,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.614.0",
+    "@aws-sdk/lib-dynamodb": "^3.614.0",
     "@fastify/autoload": "^5.0.0",
     "@fastify/sensible": "^5.0.0",
     "fastify": "^4.26.1",
     "fastify-cli": "^6.2.1",
-    "fastify-plugin": "^4.0.0"
+    "fastify-plugin": "^4.0.0",
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.4",
