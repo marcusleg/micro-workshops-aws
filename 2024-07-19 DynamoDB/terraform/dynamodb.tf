@@ -14,10 +14,27 @@ resource "aws_dynamodb_table" "employee_skills" {
     type = "S"
   }
 
+  attribute {
+    name = "Skill"
+    type = "S"
+  }
+
+  attribute {
+    name = "GSI-Skill-AvailableFrom-Employee-SK"
+    type = "S"
+  }
+
   global_secondary_index {
     name            = "SK-PK-index"
     hash_key        = "SK"
     range_key       = "PK"
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
+    name            = "Skill-AvailableFrom-Employee-index"
+    hash_key        = "Skill"
+    range_key       = "GSI-Skill-AvailableFrom-Employee-SK"
     projection_type = "ALL"
   }
 }
@@ -49,7 +66,8 @@ resource "aws_dynamodb_table_item" "employee_michael_jackson_skills" {
 {
   "PK": {"S": "EMPLOYEE#01J33CZCCQGP9A1WDFTV0100ER"},
   "SK": {"S": "SKILL#${upper(each.value)}"},
-  "Skill": {"S": "${each.value}"}
+  "Skill": {"S": "${each.value}"},
+  "GSI-Skill-AvailableFrom-Employee-SK": {"S": "AVAILABLEFROM#2024-07-01#EMPLOYEE#01J33CZCCQGP9A1WDFTV0100ER"}
 }
 ITEM
 }
@@ -95,7 +113,8 @@ resource "aws_dynamodb_table_item" "employee_alexi_laiho_skills" {
 {
   "PK": {"S": "EMPLOYEE#01J33RD5ZYMCZWSSQ0B76EGYGS"},
   "SK": {"S": "SKILL#${upper(each.value)}"},
-  "Skill": {"S": "${each.value}"}
+  "Skill": {"S": "${each.value}"},
+  "GSI-Skill-AvailableFrom-Employee-SK": {"S": "AVAILABLEFROM#2024-10-01#EMPLOYEE#01J33RD5ZYMCZWSSQ0B76EGYGS"}
 }
 ITEM
 }
