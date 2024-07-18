@@ -11,12 +11,7 @@ import { ulid } from "ulid";
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-const addSkillToEmployee = async (employeeId: string, skill: string) => {
-  // TODO
-  return;
-};
-
-const deleteEmployee = async (employeeId: string) => {
+const deleteEmployeeById = async (employeeId: string) => {
   const command = new DeleteCommand({
     TableName: DYNAMODB_TABLE_NAME,
     Key: {
@@ -29,14 +24,9 @@ const deleteEmployee = async (employeeId: string) => {
   // TODO delete 'skills' and 'available from' data
 };
 
-const deleteSkillFromEmployee = async (employeeId: string, skill: string) => {
-  // TODO
-  return;
-};
-
 const getEmployeeById = async (employeeId: string) => {
   // TODO
-  return { metadata: {}, skills: [] };
+  return { name: "TODO", availableFrom: "1970-01-01", skills: [] };
 };
 
 const listEmployees = async () => {
@@ -78,7 +68,11 @@ const listEmployeesBySkillAndAvailableFrom = async (
   return [];
 };
 
-const putEmployee = async (name: string) => {
+const putEmployee = async (
+  name: string,
+  availableFrom: string,
+  skills: string[],
+) => {
   const employeeId = ulid();
   const command = new PutCommand({
     TableName: DYNAMODB_TABLE_NAME,
@@ -90,19 +84,30 @@ const putEmployee = async (name: string) => {
   });
   await docClient.send(command);
 
+  // TODO implement putCommands for 'skills' and 'available from' data
+
   return getEmployeeById(employeeId);
 };
 
+const updateEmployee = async (
+  employeeId: string,
+  name?: string,
+  availableFrom?: string,
+  skills?: string[],
+) => {
+  // TODO
+  return;
+};
+
 const employeeSkillsTable = {
-  addSkillToEmployee,
-  deleteEmployee,
-  deleteSkillFromEmployee,
+  deleteEmployee: deleteEmployeeById,
   getEmployeeById,
   listEmployees,
   listEmployeesByAvailableFrom,
   listEmployeesBySkill,
   listEmployeesBySkillAndAvailableFrom,
   putEmployee,
+  updateEmployee,
 };
 
 export default employeeSkillsTable;
